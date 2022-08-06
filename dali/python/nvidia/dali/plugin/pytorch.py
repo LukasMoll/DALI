@@ -212,7 +212,7 @@ class DALIGenericIterator(_DaliBaseIterator):
         # Gather outputs
         outputs = self._get_outputs()
 
-        data_batches = [None for i in range(self._num_gpus)]
+        data_batches = [None for _ in range(self._num_gpus)]
         for i in range(self._num_gpus):
             dev_id = self._pipes[i].device_id
             # initialize dict for all output categories
@@ -280,21 +280,21 @@ class DALIGenericIterator(_DaliBaseIterator):
                 # First calculate how much data is required to return exactly self._size entries.
                 diff = self._num_gpus * self.batch_size - (self._counter - self._size)
                 # Figure out how many GPUs to grab from.
-                numGPUs_tograb = int(np.ceil(diff / self.batch_size))
+                num_gpus_tograb = int(np.ceil(diff / self.batch_size))
                 # Figure out how many results to grab from the last GPU
                 # (as a fractional GPU batch may be required to bring us
                 # right up to self._size).
                 mod_diff = diff % self.batch_size
-                data_fromlastGPU = mod_diff if mod_diff else self.batch_size
+                data_fromlast_gpu = mod_diff if mod_diff else self.batch_size
 
                 # Grab the relevant data.
                 # 1) Grab everything from the relevant GPUs.
                 # 2) Grab the right data from the last GPU.
                 # 3) Append data together correctly and return.
-                output = data_batches[0:numGPUs_tograb]
+                output = data_batches[0:num_gpus_tograb]
                 output[-1] = output[-1].copy()
                 for category in self._output_categories:
-                    output[-1][category] = output[-1][category][0:data_fromlastGPU]
+                    output[-1][category] = output[-1][category][0:data_fromlast_gpu]
                 return output
 
         return data_batches

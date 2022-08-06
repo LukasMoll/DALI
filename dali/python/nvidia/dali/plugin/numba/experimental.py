@@ -113,16 +113,9 @@ class NumbaFunction(metaclass=ops._DaliOperatorMeta):
                                 numba_types.int32, numba_types.int32)
 
     def _run_fn_sig(self, batch_processing=False):
-        sig_types = []
-        sig_types.append(numba_types.uint64)
-        sig_types.append(numba_types.uint64)
-        sig_types.append(numba_types.uint64)
-        sig_types.append(numba_types.int32)
-
-        sig_types.append(numba_types.uint64)
-        sig_types.append(numba_types.uint64)
-        sig_types.append(numba_types.uint64)
-        sig_types.append(numba_types.int32)
+        sig_types = [numba_types.uint64, numba_types.uint64, numba_types.uint64,
+                     numba_types.int32, numba_types.uint64, numba_types.uint64,
+                     numba_types.uint64, numba_types.int32]
 
         if batch_processing:
             sig_types.append(numba_types.int32)
@@ -138,7 +131,7 @@ class NumbaFunction(metaclass=ops._DaliOperatorMeta):
 
     def _get_carrays_eval_lambda(self, types, ndim):
         ret = [self._get_carray_eval_lambda(dtype, ndim) for dtype, ndim in zip(types, ndim)]
-        ret += [njit(eval(("lambda x, y: None"))) for i in range(6 - len(types))]
+        ret += [njit(eval("lambda x, y: None")) for _ in range(6 - len(types))]
         return tuple(ret)
 
     def _get_run_fn_lambda(self, num_outs, num_ins):

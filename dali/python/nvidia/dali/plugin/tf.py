@@ -35,7 +35,7 @@ from collections.abc import Mapping, Iterable
 
 _dali_tf_module = dali_tf_plugin.load_dali_tf_plugin()
 _dali_tf = _dali_tf_module.dali
-_dali_tf.__doc__ = _dali_tf.__doc__ + """
+_dali_tf.__doc__ += """
 
     Please keep in mind that TensorFlow allocates almost all available device memory by default.
     This might cause errors in DALI due to insufficient memory. On how to change this behaviour
@@ -201,14 +201,14 @@ def serialize_pipeline(pipeline):
                            "TensorFlow Dataset API and DALIIterator.") from e
 
 
-def DALIIteratorWrapper(pipeline=None,
-                        serialized_pipeline=None,
-                        sparse=[],
-                        shapes=[],
-                        dtypes=[],
-                        batch_size=-1,
-                        prefetch_queue_depth=2,
-                        **kwargs):
+def dali_iterator_wrapper(pipeline=None,
+                          serialized_pipeline=None,
+                          sparse=[],
+                          shapes=[],
+                          dtypes=[],
+                          batch_size=-1,
+                          prefetch_queue_depth=2,
+                          **kwargs):
     """
   TF Plugin Wrapper
 
@@ -287,12 +287,12 @@ def DALIIteratorWrapper(pipeline=None,
     return new_out
 
 
-def DALIIterator():
-    return DALIIteratorWrapper
+def dali_iterator():
+    return dali_iterator_wrapper
 
 
 # Vanilla raw operator legacy
-def DALIRawIterator():
+def dali_raw_iterator():
     return _dali_tf
 
 
@@ -388,7 +388,7 @@ def _get_current_device_spec():
         # DeviceSpec
         return context.device_spec
     else:
-        # Get the default graf, we assume that it's the one in use
+        # Get the default graph, we assume that it's the one in use
         g = tf.compat.v1.get_default_graph()
         # Get the top element of _UserDeviceSpec stack - `with tf.device()` pushes to the stack
         # in graph mode.
@@ -595,7 +595,7 @@ if dataset_compatible_tensorflow():
                     dataset = tf.data.Dataset.from_generator(tf_gen, output_signature=signature)
                     if _cycle_enabled(source_desc.cycle):
                         dataset = dataset.repeat()
-                    # if DALIDataset was placed on GPU, we need to add the copy targetting
+                    # if DALIDataset was placed on GPU, we need to add the copy targeting
                     # that device (with proper id).
                     if is_dali_on_gpu:
                         dataset = dataset.apply(
@@ -887,7 +887,7 @@ DALIDataset.__doc__ = """Creates a ``DALIDataset`` compatible with
     .. warning::
        Most TensorFlow Datasets have only CPU variant. To process GPU-placed ``DALIDataset`` by
        other TensorFlow dataset you need to first copy it back to CPU using explicit
-       ``tf.data.experimental.copy_to_device`` - roundtrip from CPU to GPU back to CPU would
+       ``tf.data.experimental.copy_to_device`` - round-trip from CPU to GPU back to CPU would
        probably degrade performance a lot and is thus discouraged.
 
        Additionally, it is advised to not use datasets like ``repeat()`` or similar after
@@ -948,5 +948,5 @@ DALIDataset.__doc__ = """Creates a ``DALIDataset`` compatible with
 
     """
 
-DALIIterator.__doc__ = DALIIteratorWrapper.__doc__
-DALIRawIterator.__doc__ = _dali_tf.__doc__
+dali_iterator.__doc__ = dali_iterator_wrapper.__doc__
+dali_raw_iterator.__doc__ = _dali_tf.__doc__

@@ -258,7 +258,7 @@ class _DaliBaseIterator(object):
             self._shard_sizes_per_gpu = self._calculate_shard_sizes(np.arange(0, self._shards_num))
 
             # to avoid recalculation of shard sizes when iterator moves across the shards
-            # memorize the initial shard sizes and then use chaning self._shards_id to index it
+            # memorize the initial shard sizes and then use chaining self._shards_id to index it
             self._shard_sizes_per_gpu_initial = self._shard_sizes_per_gpu.copy()
 
     def _remove_padded(self):
@@ -287,7 +287,7 @@ class _DaliBaseIterator(object):
         # if pipeline was not scheduled ever do it here
         if not self._ever_scheduled:
             self._schedule_runs(False)
-        if self._size > 0 and self._counter >= self._size:
+        if 0 < self._size <= self._counter:
             self._end_iteration()
 
         outputs = []
@@ -370,13 +370,13 @@ class _DaliBaseIterator(object):
                     self._counter = min(self._counter_per_gpu)
                 else:
                     # legacy way
-                    self._counter = self._counter % self._size
+                    self._counter %= self._size
             else:
                 self._counter = 0
             # advance to the next shard
             if self._reader_name:
                 if not self._is_stick_to_shard:
-                    # move shards id for wrapped pipeliens
+                    # move shards id for wrapped pipelines
                     self._shards_id = (self._shards_id + 1) % self._shards_num
                 # revaluate _size
                 if self._last_batch_policy == LastBatchPolicy.FILL and not self._last_batch_padded:
@@ -386,7 +386,7 @@ class _DaliBaseIterator(object):
                     # check how many samples we need to reach from each shard in next epoch
                     # per each GPU taking into account already read
                     read_in_next_epoch = self._shard_sizes_per_gpu - self._counter_per_gpu
-                    # get the maximmum number of samples and round it up to full batch sizes
+                    # get the maximum number of samples and round it up to full batch sizes
                     self._size = math.ceil(max(read_in_next_epoch) / self.batch_size) * \
                         self.batch_size
                     # in case some epoch is skipped because we have read ahead in this epoch so

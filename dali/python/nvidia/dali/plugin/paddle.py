@@ -276,7 +276,7 @@ class DALIGenericIterator(_DaliBaseIterator):
         # Gather outputs
         outputs = self._get_outputs()
 
-        data_batches = [None for i in range(self._num_gpus)]
+        data_batches = [None for _ in range(self._num_gpus)]
 
         for i in range(self._num_gpus):
             dev_id = self._pipes[i].device_id
