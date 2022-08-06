@@ -104,7 +104,7 @@ def assert_cpu_batch_data_type(batch, error_str="Unsupported callback return typ
             assert_cpu_sample_data_type(sample, error_str)
         return True
     elif assert_cpu_sample_data_type(batch, error_str):
-        # Bach can be repsented as dense tensor
+        # Bach can be represented as dense tensor
         return True
     else:
         raise TypeError(error_str.format(type(batch)))
@@ -171,7 +171,7 @@ class _CycleIter:
                 return next(self.it)
 
 
-class _CycleGenFunc():
+class _CycleGenFunc:
     def __init__(self, gen_func, mode):
         self.source = gen_func
         self.signaling = (mode == "raise")

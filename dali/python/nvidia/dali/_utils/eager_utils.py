@@ -748,7 +748,7 @@ def _get_rng_state_target_module(submodules):
     """ Returns target module of rng_state. If a module did not exist, creates it. """
     from nvidia.dali.experimental import eager
 
-    last_module = eager.rng_state
+    last_module = eager.RngState
     for cur_module_name in submodules:
         # If nonexistent registers rng_state's submodule.
         cur_module = last_module._submodule(cur_module_name)
