@@ -73,13 +73,13 @@ class arithmetic(metaclass=_MetaArithmetic):
     _enabled = False
 
 
-class rng_state(_create_module_class()):
+class RngState(_create_module_class()):
     """ Manager class for stateful operators. This object holds a cache of reusable operators.
     Operators are initialized with deterministic seeds generated according to the ``seed`` argument
     and are reused when you call the same operator with the same scalar parameters.
 
     Example:
-        >>> eager_state = dali.experimental.eager.rng_state(seed=42)
+        >>> eager_state = dali.experimental.eager.RngState(seed=42)
         >>> out1 = eager_state.random.normal(shape=[5, 5], batch_size=8)
         >>> # Here we will reuse the same operator.
         >>> out2 = eager_state.random.normal(shape=[5, 5], batch_size=8)
@@ -93,7 +93,7 @@ class rng_state(_create_module_class()):
         self._operator_cache = {}
         self._seed_generator = np.random.default_rng(seed)
 
-        for name, submodule_class in rng_state._submodules.items():
+        for name, submodule_class in RngState._submodules.items():
             # Create attributes imitating submodules, e.g. `random`, `noise`.
             setattr(self, name, submodule_class(self._operator_cache, self._seed_generator))
 
