@@ -242,7 +242,7 @@ class CallbackContext:
 
     @property
     def scheduled_ahead(self):
-        # at the begining of a new epoch all previously scheduled tasks are discarded
+        # at the beginning of a new epoch all previously scheduled tasks are discarded
         if not self.epoch_synced:
             return 0
         return len(self.task_queue)

@@ -21,14 +21,14 @@ from nvidia.dali._multiproc.shared_batch import _align_up as align_up
 
 
 class QueueMeta(Structure):
-    _fields = ("capacity", "i"), ("size", "i"), ("begining", "i"), ("is_closed", "i")
+    _fields = ("capacity", "i"), ("size", "i"), ("beginning", "i"), ("is_closed", "i")
 
 
 class ShmQueue:
 
     """
     Simple fixed capacity shared memory queue of fixed size messages.
-    Writting to a full queue fails, attempt to get from an empty queue blocks until data is
+    Writing to a full queue fails, attempt to get from an empty queue blocks until data is
     available or the queue is closed.
     """
 
@@ -84,10 +84,10 @@ class ShmQueue:
         num_take = self.meta.size
         if num_samples is not None and num_samples < num_take:
             num_take = num_samples
-        recv = [self._read_msg((self.meta.begining + i) % self.meta.capacity)
+        recv = [self._read_msg((self.meta.beginning + i) % self.meta.capacity)
                 for i in range(num_take)]
         self.meta.size -= num_take
-        self.meta.begining = (self.meta.begining + num_take) % self.meta.capacity
+        self.meta.beginning = (self.meta.beginning + num_take) % self.meta.capacity
         self._write_meta()
         return recv
 

@@ -25,7 +25,7 @@ class ShmMessageDesc(Structure):
     by the receiver of the `ShmMessageDesc` instance.
     ----------
     `worker_id` : int
-        Intger identifying a process that put the message, number from [0, num_workers) range
+        Integer identifying a process that put the message, number from [0, num_workers) range
         for workers or -1 in case of a main process.
     `shm_chunk_id` : int
         Integer identifying shm chunk that contains pickled data to be read by the receiver
@@ -99,8 +99,8 @@ class SampleRange:
         self.epoch_idx = epoch_idx
         if slice_end is None:
             slice_end = sample_end - sample_start
-        assert slice_start >= 0 and slice_start <= sample_end - sample_start
-        assert slice_end >= slice_start and slice_end <= sample_end - sample_start
+        assert 0 <= slice_start <= sample_end - sample_start
+        assert slice_start <= slice_end <= sample_end - sample_start
         # idx of first sample in slice (in a batch not an epoch)
         self.slice_start = slice_start
         # idx of one past last sample in slice (in a batch not an epoch)

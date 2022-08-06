@@ -92,7 +92,7 @@ class SharedMem:
         """Resize already allocated shared memory chunk. If you want to resize the underlying
         shared memory chunk pass trunc=True, if the memory chunk has already been resized
         via another SharedMem instance (possibly in another process), pass new size and
-        trunc=False to simply adjust mmaping of the memory into the current process address space.
+        trunc=False to simply adjust mapping of the memory into the current process address space.
         """
         if 'buf' in self.__dict__:
             del self.__dict__['buf']
@@ -100,7 +100,7 @@ class SharedMem:
         self.capacity = size
 
     def close(self):
-        """Removes maping of the memory into process address space and closes related handle.
+        """Removes mapping of the memory into process address space and closes related handle.
         If all processes sharing given chunk close it, it will be automatically released by the OS.
         You don't have to call this method, as corresponding clean up is performed when instance
         gets garbage collected but you can call it as soon as you no longer need it for more
