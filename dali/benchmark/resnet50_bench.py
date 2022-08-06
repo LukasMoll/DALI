@@ -105,14 +105,14 @@ class HybridPipe(Pipeline):
         self.feed_input(self.jpegs, raw_data)
 
 
-def run_benchmarks(PipeType, args):
-    print("Running Benchmarks For {}".format(PipeType.__name__))
+def run_benchmarks(pipe_type, args):
+    print("Running Benchmarks For {}".format(pipe_type.__name__))
     for executor in args.executors:
         pipelined = executor > 0
         exec_async = executor > 1
         for batch_size in args.batch_sizes:
             for num_threads in args.thread_counts:
-                pipe = PipeType(batch_size, num_threads, 0, pipelined, exec_async)
+                pipe = pipe_type(batch_size, num_threads, 0, pipelined, exec_async)
                 pipe.build()
                 start_time = timer()
                 for i in range(args.num_iters):
@@ -120,7 +120,7 @@ def run_benchmarks(PipeType, args):
 
                 total_time = timer() - start_time
                 print("{}/{}/{}/{}: FPS={}"
-                      .format(PipeType.__name__, executor, batch_size, num_threads,
+                      .format(pipe_type.__name__, executor, batch_size, num_threads,
                               float(batch_size * args.num_iters) / total_time))
 
 
